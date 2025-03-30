@@ -102,7 +102,7 @@ lv_display_t * lv_linux_fbdev_create(void)
     LV_ASSERT_MALLOC(dsc);
     if(dsc == NULL) return NULL;
 
-    lv_display_t * disp = lv_display_create(800, 480);
+    lv_display_t * disp = lv_display_create(320, 240);
     if(disp == NULL) {
         lv_free(dsc);
         return NULL;
@@ -181,6 +181,7 @@ void lv_linux_fbdev_set_file(lv_display_t * disp, const char * file)
 
     /* Figure out the size of the screen in bytes*/
     dsc->screensize =  dsc->finfo.smem_len;/*finfo.line_length * vinfo.yres;*/
+    dsc->finfo.line_length = 640;
 
     /* Map the device to memory*/
     dsc->fbp = (char *)mmap(0, dsc->screensize, PROT_READ | PROT_WRITE, MAP_SHARED, dsc->fbfd, 0);
