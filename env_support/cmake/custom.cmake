@@ -17,11 +17,39 @@ endif( LV_CONF_PATH )
 # Option to build shared libraries (as opposed to static), default: OFF
 option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
 
+# set(freetype_src
+#     ${LVGL_ROOT_DIR}/libs/freetype/src/base/ftbase.c
+#     ${LVGL_ROOT_DIR}/libs/freetype/src/base/ftbitmap.c
+#     ${LVGL_ROOT_DIR}/libs/freetype/src/base/ftdebug.c
+#     ${LVGL_ROOT_DIR}/libs/freetype/src/base/ftglyph.c
+#     ${LVGL_ROOT_DIR}/libs/freetype/src/base/ftinit.c
+#     ${LVGL_ROOT_DIR}/libs/freetype/src/base/ftstroke.c
+    
+#     ${LVGL_ROOT_DIR}/libs/freetype/src/cache/ftcache.c
+#     ${LVGL_ROOT_DIR}/libs/freetype/src/gzip/ftgzip.c
+#     ${LVGL_ROOT_DIR}/libs/freetype/src/sfnt/sfnt.c
+#     ${LVGL_ROOT_DIR}/libs/freetype/src/smooth/smooth.c
+#     ${LVGL_ROOT_DIR}/libs/freetype/src/truetype/truetype.c
+    
+# )
+
+include_directories(
+    ${LVGL_ROOT_DIR}/libs/freetype/include
+)
+
 # Set sources used for LVGL components
 file(GLOB_RECURSE SOURCES ${LVGL_ROOT_DIR}/src/*.c ${LVGL_ROOT_DIR}/src/*.S)
 file(GLOB_RECURSE EXAMPLE_SOURCES ${LVGL_ROOT_DIR}/examples/*.c)
 file(GLOB_RECURSE DEMO_SOURCES ${LVGL_ROOT_DIR}/demos/*.c)
 file(GLOB_RECURSE THORVG_SOURCES ${LVGL_ROOT_DIR}/src/libs/thorvg/*.cpp ${LVGL_ROOT_DIR}/src/others/vg_lite_tvg/*.cpp)
+
+# add_definitions(
+#     -DFT2_BUILD_LIBRARY
+#     -DFT_CONFIG_CONFIG_H=<${LVGL_ROOT_DIR}/libs/freetype/include/freetype/config/ftconfig.h>
+#     -DFT_CONFIG_MODULES_H=<${LVGL_ROOT_DIR}/src/libs/freetype/ftmodule.h>
+#     -DFT_CONFIG_OPTIONS_H=<${LVGL_ROOT_DIR}/src/libs/freetype/ftoption.h>
+#     )
+
 
 # Build LVGL library
 add_library(lvgl ${SOURCES})
@@ -44,6 +72,9 @@ endif()
 # Include root and optional parent path of LV_CONF_PATH
 target_include_directories(lvgl SYSTEM PUBLIC ${LVGL_ROOT_DIR} ${LV_CONF_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 
+target_link_libraries(lvgl PUBLIC 
+  ${LVGL_ROOT_DIR}/libs/freetype/lib/libfreetype.a
+)
 
 if(NOT LV_CONF_BUILD_DISABLE_THORVG_INTERNAL)
     add_library(lvgl_thorvg ${THORVG_SOURCES})
